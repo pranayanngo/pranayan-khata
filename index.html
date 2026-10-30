@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRANAYAN KHATA</title>
+<meta name="theme-color" content="#0d3b66">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon.ico">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="stylesheet" href="css/styles.css">
+<script>
+/* Safety net: if the app cannot start, say so instead of showing an empty page. */
+window.__boot=false;
+function showErr(m){var a=document.getElementById('app');if(a&&!a.children.length){a.innerHTML='<div class="note"><b>The app could not start.</b><br>'+m+'<br><br>Open <a href="check.html"><b>check.html</b></a> to find the problem (usually a file that was not uploaded, or a typo in js/config.js).</div>'}}
+addEventListener('error',function(e){var t=e.target;showErr(t&&t.src?'Could not load '+t.src.split('/').slice(-2).join('/'):String(e.message||'Script error'))},true);
+addEventListener('unhandledrejection',function(e){showErr(String((e.reason&&e.reason.message)||e.reason))});
+setTimeout(function(){if(!window.__boot)showErr('The app files did not load completely.')},4000);
+</script></head>
+<body>
+<header class="top">
+<img id="logo" src="assets/logo/pranayan-logo.png" alt="Logo" width="40" height="40" onerror="if(!this.src.endsWith('pranayan-logo.png')){this.src='assets/logo/pranayan-logo.png'}else{this.style.display='none'}">
+<div><b id="brand">PRANAYAN KHATA</b><small id="mode">Private Mode · this device only</small></div>
+<span id="net" class="pill">Online</span><button id="sync" class="sec" hidden aria-label="Sync now"></button><button id="install" class="sec" hidden>Install</button>
+</header>
+<nav id="nav" aria-label="Main"><a href="#/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="#/list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>All</span></a><a href="#/reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Reports</span></a><a href="#/backup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/></svg><span>Backup</span></a><a href="#/settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Settings</span></a></nav>
+<main id="app"></main>
+<a id="fab" href="#/add" aria-label="Add transaction">+</a>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="js/app.js"></script>
+</body></html>

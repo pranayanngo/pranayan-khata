@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRANAYAN KHATA: setup check</title>
+<link rel="stylesheet" href="css/styles.css"></head>
+<body style="padding:16px;max-width:780px;margin:auto">
+<h2>Setup check</h2>
+<p class="mut">Tests that every app file is uploaded and readable. It never shows secrets.</p>
+<div class="card"><table class="rep" id="t"></table></div>
+<div class="row"><button id="fix">Clear app cache and reload</button><a class="btn" href="./">Open the app</a></div>
+<p class="mut">If a row shows ❌: upload that file again (same folder and exact name, all lowercase) and check this page again. "Clear app cache" fixes a phone or browser showing an old or half-loaded version.</p>
+<script>
+var FILES=['index.html','offline.html','manifest.webmanifest','service-worker.js','css/styles.css','js/app.js','js/db.js','js/sync.js','js/api.js','js/admin.js','js/cfg.js','js/config.js','assets/logo/pranayan-logo.png','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/favicon.ico'];
+var rows=[];function add(ok,n,m){rows.push('<tr><td>'+(ok?'✅':'❌')+'</td><td><code>'+n+'</code></td><td>'+m+'</td></tr>')}
+(async function(){
+ for(var i=0;i<FILES.length;i++){var f=FILES[i];try{var r=await fetch(f,{cache:'no-store'});add(r.ok,f,r.ok?'found':'HTTP '+r.status+': file missing, misspelled, or in the wrong folder')}catch(e){add(false,f,'could not be loaded')}}
+ var u='';try{var m=await import('./js/config.js?'+Date.now());u=String(m.API_URL||'').trim();
+  add(typeof m.SYNC_INTERVAL_MS==='number','js/config.js (SYNC_INTERVAL_MS)',typeof m.SYNC_INTERVAL_MS==='number'?'ok':'line missing: it must contain <code>export const SYNC_INTERVAL_MS=15000;</code>');
+  add(!u||/^https?:\/\//.test(u),'js/config.js (API_URL)',!u?'empty: the app runs in Private Mode only':(/^https?:\/\//.test(u)?'set ('+u.length+' characters, begins '+u.slice(0,34)+'…)':'must begin with https://'))}
+ catch(e){add(false,'js/config.js','has a typo or is invalid: '+e.message+'. It must be exactly two lines, e.g. <code>export const API_URL=\'https://script.google.com/macros/s/XXXX/exec\';</code> then <code>export const SYNC_INTERVAL_MS=15000;</code> (straight quotes, ending with semicolons).')}
+ if(/^https?:\/\//.test(u)){try{var g=await (await fetch(u)).json();add(g&&g.ok===true,'Google backend',g&&g.ok?'reachable and answering':'answered, but not as expected')}catch(e){add(false,'Google backend','could not be reached. Check the URL ends with /exec and the deployment access is "Anyone", then redeploy a New version.')}}
+ add(!!window.indexedDB,'Browser storage (IndexedDB)',window.indexedDB?'available':'blocked (private/incognito window?)');
+ add('serviceWorker' in navigator,'Offline support','serviceWorker' in navigator?'available':'not available in this browser');
+ try{var k=await caches.keys();add(true,'Cached app versions',k.length?k.join(', '):'none yet')}catch(e){}
+ document.getElementById('t').innerHTML=rows.join('');
+})();
+document.getElementById('fix').onclick=async function(){try{var rs=await navigator.serviceWorker.getRegistrations();for(var r of rs)await r.unregister();var k=await caches.keys();for(var n of k)await caches.delete(n)}catch(e){}location.href='./?fresh='+Date.now()};
+</script></body></html>
